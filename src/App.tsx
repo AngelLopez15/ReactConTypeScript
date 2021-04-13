@@ -1,4 +1,5 @@
 import Contador from './components/Contador';
+import CustomHookContador from './components/CustomHookContador';
 import Funciones from './typescript/Funciones';
 import ObjetosLiterales from './typescript/ObjetosLiterales';
 import TiposBasicos from './typescript/TiposBasicos';
@@ -15,6 +16,8 @@ export default function App() {
       <Funciones />
       <hr/>
       <Contador />
+      <hr/>
+      <CustomHookContador />
     </div>
   )
 }
