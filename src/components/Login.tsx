@@ -16,8 +16,13 @@ const initialState: AuthState = {
   nombre: '',
 }
 
+type LoginPayload = {
+  username: string,
+  nombre: string,
+}
+
 // Declarando un type para hacer el tipo de dato de la accion
-type AuthAction = {type: 'logout' }
+type AuthAction = {type: 'logout' } | {type: 'login', payload: LoginPayload }
 
 // Declarando el reducer
 const authReducer = (state: AuthState, action:AuthAction):AuthState => {
@@ -29,6 +34,15 @@ const authReducer = (state: AuthState, action:AuthAction):AuthState => {
         nombre:'',
         username:'',
       }
+      case 'login':
+        // podemos aplicar desestructutacion
+        // const {nombre, username} = action.payload
+        return {
+          validando:false,
+          token: 'abc1234acde',
+          nombre: action.payload.nombre,
+          username: action.payload.username,
+        }
     default:
       return state;
   }
@@ -36,7 +50,7 @@ const authReducer = (state: AuthState, action:AuthAction):AuthState => {
 
 export default function Login() {
   
-  const [state, dispatch] = useReducer(authReducer, initialState)
+  const [{validando, token, nombre, username}, dispatch] = useReducer(authReducer, initialState)
 
   useEffect(() => {
     setTimeout(()=>{
@@ -44,7 +58,18 @@ export default function Login() {
     }, 2000)
   }, [])
 
-  if(state.validando) {
+  const login = () => {
+    dispatch({type: 'login', payload: {
+      nombre: 'Angel López',
+      username: 'Fury',
+    }})
+  }
+
+  const logout = () => {
+    dispatch({type: 'logout'})
+  }
+
+  if(validando) {
     return (
       <>
         <h3>Login</h3>
@@ -58,14 +83,28 @@ export default function Login() {
   return (
     <div>
       <h3>Login</h3>
-      <div className="alert alert-danger">
-        <p>No autenticado</p>
+      <div>
+        {
+          (token) 
+          ? 
+            <div className="alert alert-success">
+              <p>Autenticado como: {nombre}</p>
+            </div>
+          :
+            <div className="alert alert-danger">
+              <p>No autenticado</p>
+            </div>
+        }
       </div>
-      <div className="alert alert-success">
-        <p>Autenticado</p>
+      <div>
+        {
+          (token)
+          ? 
+            <button className="btn btn-danger mx-2" onClick={logout}>Logout</button>
+          :
+            <button className="btn btn-primary mx-2" onClick={login}>Login</button>
+        }
       </div>
-      <button className="btn btn-primary mx-2">Login</button>
-      <button className="btn btn-danger mx-2">Logout</button>
     </div>
   )
 }
